@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URBAN VIBE — Luxury Streetwear & Premium Sneakers</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0B0D10',
+                        cardBg: '#13161C',
+                        emeraldAccent: '#10B981',
+                        crimsonAccent: '#EF4444',
+                        goldAccent: '#F59E0B'
+                    },
+                    fontFamily: {
+                        syne: ['Syne', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js CDN for 3D Hero Particles -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0D10; }
+        ::-webkit-scrollbar-thumb { background: #262B36; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10B981; }
+
+        /* Glassmorphism Effect */
+        .glass-nav {
+            background: rgba(11, 13, 16, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(19, 22, 28, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px -10px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Hero 3D Canvas Vignette */
+        .vignette-overlay {
+            background: radial-gradient(circle at center, transparent 30%, #0B0D10 90%);
+        }
+    </style>
+</head>
+<body class="bg-obsidian text-zinc-100 font-sans antialiased selection:bg-emeraldAccent selection:text-obsidian overflow-x-hidden">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-emeraldAccent/10 border-b border-emeraldAccent/20 text-emeraldAccent text-center py-2 px-4 text-xs font-semibold tracking-wider uppercase flex items-center justify-center gap-2">
+        <span class="animate-pulse w-2 h-2 rounded-full bg-emeraldAccent"></span>
+        <span>FESTIVE DROP: EXTRA 10% OFF WITH CODE "URBAN10" + FREE EXPRESS DELIVERY ALL OVER INDIA</span>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 w-full glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emeraldAccent to-teal-400 flex items-center justify-center font-syne font-extrabold text-obsidian text-xl tracking-tighter group-hover:scale-105 transition-transform">
+                    UV
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-syne text-2xl font-extrabold tracking-wider text-white group-hover:text-emeraldAccent transition-colors">URBAN VIBE</span>
+                    <span class="text-[9px] uppercase tracking-widest text-zinc-400 -mt-1 font-semibold">Streetwear & Kicks</span>
+                </div>
+            </a>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-md relative">
+                <input type="text" id="desktop-search" oninput="handleSearch(this.value)" placeholder="Search hoodies, jackets, sneakers, jutes..." class="w-full bg-zinc-900/80 border border-zinc-800 rounded-full py-2.5 pl-10 pr-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-emeraldAccent transition-all">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="flex items-center space-x-5">
+                <!-- Mobile Search Toggle -->
+                <button onclick="toggleSearchModal()" class="md:hidden text-zinc-300 hover:text-emeraldAccent text-lg">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <!-- Wishlist Counter -->
+                <button onclick="showToast('Wishlist feature saved to account!')" class="relative text-zinc-300 hover:text-emeraldAccent transition-colors">
+                    <i class="fa-regular fa-heart text-xl"></i>
+                    <span id="wishlist-badge" class="absolute -top-1.5 -right-2 bg-crimsonAccent text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">3</span>
+                </button>
+
+                <!-- Shopping Cart Toggle -->
+                <button onclick="toggleCartDrawer()" class="relative text-zinc-300 hover:text-emeraldAccent transition-colors flex items-center gap-2 px-3 py-2 rounded-full bg-zinc-900 border border-zinc-800 hover:border-emeraldAccent/50">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="cart-counter" class="bg-emeraldAccent text-obsidian font-bold text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Bar Navigation -->
+        <div class="border-t border-zinc-800/60 bg-obsidian/90 px-4 py-2 overflow-x-auto no-scrollbar">
+            <div class="max-w-7xl mx-auto flex items-center justify-center gap-6 text-xs uppercase font-bold tracking-wider text-zinc-400 whitespace-nowrap">
+                <button onclick="filterCategory('all')" class="category-btn active text-emeraldAccent hover:text-white transition-colors" data-cat="all">All Drops</button>
+                <button onclick="filterCategory('apparel')" class="category-btn hover:text-white transition-colors" data-cat="apparel">Street Apparel</button>
+                <button onclick="filterCategory('footwear')" class="category-btn hover:text-white transition-colors" data-cat="footwear">Sneakers & Shoes</button>
+                <button onclick="filterCategory('best-seller')" class="category-btn hover:text-white transition-colors" data-cat="best-seller">🔥 Best Sellers</button>
+                <button onclick="filterCategory('accessories')" class="category-btn hover:text-white transition-colors" data-cat="accessories">Accessories</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SEARCH MODAL (MOBILE & DESKTOP OVERLAY) -->
+    <div id="search-modal" class="fixed inset-0 bg-obsidian/95 z-50 hidden flex-col p-6 backdrop-blur-xl">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="font-syne text-xl text-white font-bold">Search Products</h3>
+            <button onclick="toggleSearchModal()" class="text-zinc-400 text-2xl hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <input type="text" id="mobile-search-input" oninput="handleSearch(this.value)" placeholder="Type sneakers, oversize tees, leather jacket..." class="w-full bg-zinc-900 border border-emeraldAccent/40 rounded-xl p-4 text-white text-sm focus:outline-none mb-6">
+        <div id="search-results-preview" class="flex-1 overflow-y-auto space-y-3">
+            <p class="text-xs text-zinc-500">Start typing to see instant matches...</p>
+        </div>
+    </div>
+
+    <!-- HERO SECTION WITH 3D INTERACTIVE CANVAS -->
+    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden border-b border-zinc-800/80">
+        <!-- Three.js Canvas -->
+        <div class="absolute inset-0 z-0">
+            <canvas id="hero-3d-canvas" class="w-full h-full"></canvas>
+        </div>
+        <div class="absolute inset-0 z-0 vignette-overlay pointer-events-none"></div>
+
+        <!-- Hero Content Overlay -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/90 border border-emeraldAccent/30 text-emeraldAccent text-xs uppercase tracking-widest font-semibold mb-6">
+                <i class="fa-solid fa-bolt text-goldAccent"></i> Winter Haute Couture 2026 Collection
+            </div>
+            
+            <h1 class="font-syne text-5xl sm:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-none mb-6">
+                RAW STREET <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emeraldAccent via-teal-300 to-emerald-500">LUXURY EDITIONS</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-zinc-400 text-base sm:text-lg font-normal leading-relaxed mb-8">
+                Premium heavyweight streetwear cotton hoodies, hand-stitched leather jackets, and limited-edition sneakers engineered for bold urban lifestyles.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="#product-catalog" class="px-8 py-4 rounded-full bg-emeraldAccent hover:bg-emerald-400 text-obsidian font-bold text-xs uppercase tracking-widest transition-all shadow-lg shadow-emeraldAccent/20 hover:scale-105">
+                    Shop Collection <i class="fa-solid fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#lookbook" class="px-8 py-4 rounded-full bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs uppercase tracking-widest transition-all">
+                    Explore Lookbook
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-16 pt-8 border-t border-zinc-800/80 text-left">
+                <div>
+                    <h4 class="font-syne text-2xl sm:text-3xl font-extrabold text-white">100%</h4>
+                    <p class="text-xs text-zinc-400">Authentic Sneakers & Apparel</p>
+                </div>
+                <div>
+                    <h4 class="font-syne text-2xl sm:text-3xl font-extrabold text-white">₹0 FREE</h4>
+                    <p class="text-xs text-zinc-400">Express Delivery across India</p>
+                </div>
+                <div>
+                    <h4 class="font-syne text-2xl sm:text-3xl font-extrabold text-white">50,000+</h4>
+                    <p class="text-xs text-zinc-400">Happy Urban Customers</p>
+                </div>
+                <div>
+                    <h4 class="font-syne text-2xl sm:text-3xl font-extrabold text-white">7-DAY</h4>
+                    <p class="text-xs text-zinc-400">Easy Returns & Exchanges</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT CATALOG & CONTROLS SECTION -->
+    <section id="product-catalog" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <span class="text-emeraldAccent text-xs uppercase font-bold tracking-widest">Handcrafted Drop Catalogue</span>
+                <h2 class="font-syne text-3xl sm:text-4xl font-extrabold text-white mt-1">EXPLORE THE COLLECTION</h2>
+            </div>
+
+            <!-- Sorting & Total Counter -->
+            <div class="flex items-center gap-4">
+                <span id="product-count" class="text-xs text-zinc-400 font-medium">Showing 12 Products</span>
+                <select id="sort-select" onchange="sortProducts(this.value)" class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emeraldAccent">
+                    <option value="popular">Sort by: Popularity</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Newest Drops First</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- PRODUCT GRID -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Dynamic JavaScript Product Cards rendered here -->
+        </div>
+    </section>
+
+    <!-- LOOKBOOK GALLERY SHOWCASE -->
+    <section id="lookbook" class="py-20 bg-zinc-950 border-t border-b border-zinc-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-emeraldAccent uppercase tracking-widest text-xs font-bold">Urban Street Culture</span>
+                <h2 class="font-syne text-3xl sm:text-5xl font-extrabold text-white mt-2">WINTER '26 LOOKBOOK</h2>
+                <p class="text-zinc-400 text-xs sm:text-sm mt-3">Get inspired by real street edits, celebrity styling, and community fits.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="relative rounded-2xl overflow-hidden group h-80">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Streetwear Fit" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <span class="text-[10px] text-emeraldAccent uppercase font-bold tracking-wider">Oversized Aesthetics</span>
+                        <h4 class="font-syne text-white text-lg font-bold">Tokyo Cyber Hoodie</h4>
+                        <p class="text-zinc-300 text-xs mt-1">₹4,299</p>
+                    </div>
+                </div>
+
+                <div class="relative rounded-2xl overflow-hidden group h-80 md:col-span-2">
+                    <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1200&q=80" alt="Sneaker Showcase" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <span class="text-[10px] text-emeraldAccent uppercase font-bold tracking-wider">Limited Footwear</span>
+                        <h4 class="font-syne text-white text-xl font-bold">Phantom High-Top Leather Kicks</h4>
+                        <p class="text-zinc-300 text-xs mt-1">₹14,999</p>
+                    </div>
+                </div>
+
+                <div class="relative rounded-2xl overflow-hidden group h-80">
+                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" alt="High Fashion Coat" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <span class="text-[10px] text-emeraldAccent uppercase font-bold tracking-wider">Haute Outerwear</span>
+                        <h4 class="font-syne text-white text-lg font-bold">Noir Velvet Trench Coat</h4>
+                        <p class="text-zinc-300 text-xs mt-1">₹9,499</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST & SERVICE BADGES -->
+    <section class="py-12 bg-obsidian border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/80">
+                <i class="fa-solid fa-truck-fast text-2xl text-emeraldAccent"></i>
+                <div>
+                    <h5 class="font-syne font-bold text-white text-sm">Free Express Shipping</h5>
+                    <p class="text-zinc-400 text-xs">All across India via BlueDart</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/80">
+                <i class="fa-solid fa-rotate-left text-2xl text-emeraldAccent"></i>
+                <div>
+                    <h5 class="font-syne font-bold text-white text-sm">7 Days Return</h5>
+                    <p class="text-zinc-400 text-xs">No questions asked exchange</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/80">
+                <i class="fa-solid fa-shield-halved text-2xl text-emeraldAccent"></i>
+                <div>
+                    <h5 class="font-syne font-bold text-white text-sm">100% Authentic</h5>
+                    <p class="text-zinc-400 text-xs">Verified original quality</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/80">
+                <i class="fa-solid fa-headset text-2xl text-emeraldAccent"></i>
+                <div>
+                    <h5 class="font-syne font-bold text-white text-sm">24/7 Priority Support</h5>
+                    <p class="text-zinc-400 text-xs">WhatsApp & Call Help</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE-OUT CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-zinc-950 border-l border-zinc-800 z-50 transform translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between">
+        <div>
+            <!-- Cart Header -->
+            <div class="flex items-center justify-between pb-6 border-b border-zinc-800">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-syne text-2xl font-bold text-white">Your Cart</h3>
+                    <span id="cart-drawer-count" class="bg-emeraldAccent/20 text-emeraldAccent text-xs px-2 py-0.5 rounded-full font-bold">0 Items</span>
+                </div>
+                <button onclick="toggleCartDrawer()" class="text-zinc-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Free Shipping Progress Bar -->
+            <div class="py-4 border-b border-zinc-800">
+                <div class="flex justify-between text-xs text-zinc-300 mb-1">
+                    <span>Free Express Delivery Progress</span>
+                    <span id="free-shipping-text" class="text-emeraldAccent font-semibold">Unlocked!</span>
+                </div>
+                <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div id="free-shipping-bar" class="h-full bg-emeraldAccent transition-all duration-300" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Cart Items Container -->
+            <div id="cart-items-container" class="py-6 space-y-4 max-h-[45vh] overflow-y-auto">
+                <div class="text-center py-12 text-zinc-500">
+                    <i class="fa-solid fa-bag-shopping text-4xl mb-3 opacity-40"></i>
+                    <p class="text-sm">Your shopping bag is empty.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Footer / Summary -->
+        <div class="pt-6 border-t border-zinc-800 space-y-4">
+            <!-- Promo Code Input -->
+            <div class="flex gap-2">
+                <input type="text" id="promo-input" placeholder="Promo Code (Try: URBAN10)" class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emeraldAccent flex-1 uppercase">
+                <button onclick="applyPromoCode()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-4 py-2 rounded-lg font-bold">Apply</button>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-zinc-400">
+                <div class="flex justify-between"><span>Subtotal</span><span id="cart-subtotal" class="text-white font-medium">₹0</span></div>
+                <div class="flex justify-between"><span>GST (18% Included)</span><span id="cart-gst" class="text-white font-medium">₹0</span></div>
+                <div class="flex justify-between text-emeraldAccent"><span>Discount</span><span id="cart-discount">- ₹0</span></div>
+                <div class="flex justify-between"><span>Estimated Express Shipping</span><span class="text-emeraldAccent font-semibold">FREE</span></div>
+                <div class="flex justify-between text-base font-bold text-white pt-2 border-t border-zinc-800">
+                    <span>Total Amount</span>
+                    <span id="cart-total" class="text-emeraldAccent">₹0</span>
+                </div>
+            </div>
+
+            <button onclick="openCheckoutModal()" class="w-full bg-emeraldAccent hover:bg-emerald-400 text-obsidian font-extrabold py-4 rounded-xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-emeraldAccent/20">
+                Proceed To Checkout <i class="fa-solid fa-lock ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL & PAYMENT SYSTEM -->
+    <div id="checkout-modal" class="fixed inset-0 bg-obsidian/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md overflow-y-auto">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 my-8 relative">
+            <button onclick="closeCheckoutModal()" class="absolute top-6 right-6 text-zinc-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+
+            <h3 class="font-syne text-2xl font-bold text-white mb-2">Secure Checkout</h3>
+            <p class="text-xs text-zinc-400 mb-6">Complete your order with instant express processing.</p>
+
+            <form onsubmit="handleOrderSubmit(event)" class="space-y-4 text-xs">
+                <!-- Contact Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 mb-1">Full Name *</label>
+                        <input type="text" required placeholder="Aarav Sharma" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 mb-1">Phone Number (For Tracking) *</label>
+                        <input type="tel" required placeholder="+91 98765 43210" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-zinc-400 mb-1">Shipping Address *</label>
+                    <input type="text" required placeholder="Flat / Building / Street Address" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 mb-1">City *</label>
+                        <input type="text" required placeholder="Mumbai / Delhi" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 mb-1">State *</label>
+                        <input type="text" required placeholder="Maharashtra" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 mb-1">Pincode *</label>
+                        <input type="text" required placeholder="400001" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-white focus:outline-none focus:border-emeraldAccent">
+                    </div>
+                </div>
+
+                <!-- Payment Method Options -->
+                <div class="pt-4 border-t border-zinc-800">
+                    <label class="block text-zinc-300 font-bold mb-3">Select Payment Method</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <label class="flex items-center gap-2 p-3 bg-zinc-900 border border-emeraldAccent/50 rounded-xl cursor-pointer">
+                            <input type="radio" name="payment" value="upi" checked class="accent-emeraldAccent">
+                            <span class="text-white font-semibold"><i class="fa-solid fa-mobile-screen text-emeraldAccent"></i> UPI / GPay</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-3 bg-zinc-900 border border-zinc-800 rounded-xl cursor-pointer">
+                            <input type="radio" name="payment" value="card" class="accent-emeraldAccent">
+                            <span class="text-white font-semibold"><i class="fa-solid fa-credit-card text-emeraldAccent"></i> Card</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-3 bg-zinc-900 border border-zinc-800 rounded-xl cursor-pointer">
+                            <input type="radio" name="payment" value="cod" class="accent-emeraldAccent">
+                            <span class="text-white font-semibold"><i class="fa-solid fa-money-bill text-emeraldAccent"></i> COD</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex items-center justify-between border-t border-zinc-800">
+                    <div>
+                        <p class="text-zinc-400 text-[10px]">Total Payable</p>
+                        <p id="checkout-total-display" class="font-syne text-xl text-emeraldAccent font-extrabold">₹0</p>
+                    </div>
+                    <button type="submit" class="bg-emeraldAccent hover:bg-emerald-400 text-obsidian font-extrabold px-8 py-3.5 rounded-xl uppercase tracking-widest transition-all">
+                        Place Order <i class="fa-solid fa-check ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT QUICK ZOOM MODAL -->
+    <div id="product-zoom-modal" class="fixed inset-0 bg-obsidian/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl max-w-3xl w-full p-6 relative flex flex-col md:flex-row gap-6">
+            <button onclick="closeZoomModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-xl z-10"><i class="fa-solid fa-xmark"></i></button>
+
+            <div class="md:w-1/2 h-80 rounded-2xl overflow-hidden bg-zinc-900">
+                <img id="zoom-modal-img" src="" alt="Product Detail" class="w-full h-full object-cover">
+            </div>
+
+            <div class="md:w-1/2 flex flex-col justify-between space-y-4">
+                <div>
+                    <span id="zoom-modal-tag" class="text-[10px] text-emeraldAccent font-bold uppercase tracking-widest">Streetwear</span>
+                    <h3 id="zoom-modal-title" class="font-syne text-2xl font-bold text-white mt-1">Product Title</h3>
+                    <p id="zoom-modal-desc" class="text-xs text-zinc-400 mt-2 leading-relaxed">High density Japanese cotton fabric with customized fit silhouette.</p>
+                </div>
+
+                <div>
+                    <span class="text-xs text-zinc-400 block mb-2 font-semibold">Select Size</span>
+                    <div id="zoom-modal-sizes" class="flex gap-2"></div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-zinc-800">
+                    <span id="zoom-modal-price" class="font-syne text-2xl text-emeraldAccent font-bold">₹0</span>
+                    <button id="zoom-modal-add-btn" class="bg-emeraldAccent hover:bg-emerald-400 text-obsidian font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-widest transition-all">
+                        Add To Bag
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-zinc-900 border border-emeraldAccent/50 text-white text-xs px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-emeraldAccent text-base"></i>
+        <span id="toast-message">Item added to your shopping bag!</span>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-zinc-950 border-t border-zinc-800 text-zinc-400 text-xs pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-zinc-800">
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emeraldAccent flex items-center justify-center font-syne font-bold text-obsidian text-base">UV</div>
+                    <span class="font-syne text-xl font-bold text-white">URBAN VIBE</span>
+                </div>
+                <p class="leading-relaxed">India's premier high-street clothing and original luxury sneakers store. Engineered for trendsetters.</p>
+                <div class="flex space-x-4 text-zinc-400 text-base">
+                    <a href="#" class="hover:text-emeraldAccent"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-emeraldAccent"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="hover:text-emeraldAccent"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-white font-syne font-bold uppercase tracking-wider mb-4">Categories</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" onclick="filterCategory('apparel')" class="hover:text-emeraldAccent">Heavyweight Hoodies</a></li>
+                    <li><a href="#" onclick="filterCategory('apparel')" class="hover:text-emeraldAccent">Over-Sized Street Tees</a></li>
+                    <li><a href="#" onclick="filterCategory('footwear')" class="hover:text-emeraldAccent">Leather Sneakers & Jutes</a></li>
+                    <li><a href="#" onclick="filterCategory('accessories')" class="hover:text-emeraldAccent">Caps & Street Accessories</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-syne font-bold uppercase tracking-wider mb-4">Customer Care</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-emeraldAccent">Track India Post / BlueDart Order</a></li>
+                    <li><a href="#" class="hover:text-emeraldAccent">Easy 7-Day Exchange Portal</a></li>
+                    <li><a href="#" class="hover:text-emeraldAccent">Size Guide & Fit Chart</a></li>
+                    <li><a href="#" class="hover:text-emeraldAccent">Contact Us (WhatsApp 24/7)</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-syne font-bold uppercase tracking-wider mb-4">Newsletter</h4>
+                <p class="mb-3">Get VIP access to drop dates & hidden discounts.</p>
+                <div class="flex">
+                    <input type="email" placeholder="Your email address" class="bg-zinc-900 border border-zinc-800 rounded-l-xl px-3 py-2 text-white w-full focus:outline-none">
+                    <button class="bg-emeraldAccent text-obsidian px-4 font-bold rounded-r-xl hover:bg-emerald-400"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-zinc-500">
+            <p>&copy; 2026 URBAN VIBE Apparel Ltd. All Rights Reserved. Crafted for India.</p>
+            <div class="flex space-x-4 mt-2 sm:mt-0">
+                <span>Accepting: UPI • GPay • PhonePe • Cards • COD</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // --- DETAILED PRODUCT CATALOG (Apparel & Shoes/Jutes in INR) ---
+        const products = [
+            {
+                id: 1,
+                name: "Tokyo Cyber Heavyweight Hoodie",
+                category: "apparel",
+                tag: "Best Seller",
+                price: 3499,
+                originalPrice: 5999,
+                discount: "41% OFF",
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L", "XL"],
+                description: "450 GSM pure French Terry fleece with custom puff print cyber graphics."
+            },
+            {
+                id: 2,
+                name: "Phantom High-Top Leather Sneakers",
+                category: "footwear",
+                tag: "Hot Drop",
+                price: 8999,
+                originalPrice: 12999,
+                discount: "30% OFF",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80",
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                description: "Italian calfskin leather high-top kicks with cushioned memory foam soles."
+            },
+            {
+                id: 3,
+                name: "Noir Velvet Street Trench Coat",
+                category: "apparel",
+                tag: "Limited Edition",
+                price: 7499,
+                originalPrice: 10999,
+                discount: "31% OFF",
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80",
+                sizes: ["M", "L", "XL"],
+                description: "Tailored plush velvet double-breasted coat built for winter luxury."
+            },
+            {
+                id: 4,
+                name: "Retro Heritage Suede Sneakers",
+                category: "footwear",
+                tag: "Trending",
+                price: 5499,
+                originalPrice: 7999,
+                discount: "31% OFF",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80",
+                sizes: ["UK 6", "UK 7", "UK 8", "UK 9"],
+                description: "Classic suede paneling with gum rubber outsoles and vintage laces."
+            },
+            {
+                id: 5,
+                name: "Acid Wash Oversized Graphic Tee",
+                category: "apparel",
+                tag: "Best Seller",
+                price: 1899,
+                originalPrice: 2999,
+                discount: "36% OFF",
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L", "XL"],
+                description: "280 GSM combed cotton vintage acid wash tee with drop-shoulder fit."
+            },
+            {
+                id: 6,
+                name: "Aero Matrix Chunky Runner Shoes",
+                category: "footwear",
+                tag: "Hot Drop",
+                price: 6999,
+                originalPrice: 9999,
+                discount: "30% OFF",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80",
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                description: "Futuristic multi-layered mesh runner shoes with air-cushioned shock absorption."
+            },
+            {
+                id: 7,
+                name: "Biker Leather Jacket (Handcrafted)",
+                category: "apparel",
+                tag: "Limited Edition",
+                price: 12999,
+                originalPrice: 18999,
+                discount: "31% OFF",
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=800&q=80",
+                sizes: ["M", "L", "XL"],
+                description: "100% full-grain leather motorcycle jacket with YKK brass zippers."
+            },
+            {
+                id: 8,
+                name: "Urban Minimalist Black Canvas Jutes",
+                category: "footwear",
+                tag: "Trending",
+                price: 2999,
+                originalPrice: 4499,
+                discount: "33% OFF",
+                rating: 4.6,
+                image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80",
+                sizes: ["UK 6", "UK 7", "UK 8", "UK 9"],
+                description: "Slip-on breathable canvas low-tops with natural jute rope detailing."
+            },
+            {
+                id: 9,
+                name: "Cargo Utility Tactical Pants",
+                category: "apparel",
+                tag: "Best Seller",
+                price: 2799,
+                originalPrice: 3999,
+                discount: "30% OFF",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80",
+                sizes: ["28", "30", "32", "34"],
+                description: "Multi-pocket ripstop cotton cargo pants with adjustable ankle straps."
+            },
+            {
+                id: 10,
+                name: "Obsidian Beanie & Crossbody Bag Combo",
+                category: "accessories",
+                tag: "Trending",
+                price: 1499,
+                originalPrice: 2499,
+                discount: "40% OFF",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80",
+                sizes: ["FREE SIZE"],
+                description: "Waterproof tactical chest bag paired with ribbed knit skull beanie."
+            },
+            {
+                id: 11,
+                name: "Monochrome Low-Top Street Sneakers",
+                category: "footwear",
+                tag: "Best Seller",
+                price: 4999,
+                originalPrice: 7499,
+                discount: "33% OFF",
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80",
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                description: "Clean black & white color-blocked low tops for effortless street daily wear."
+            },
+            {
+                id: 12,
+                name: "Sherpa Fleece Lined Winter Denim Jacket",
+                category: "apparel",
+                tag: "Hot Drop",
+                price: 4499,
+                originalPrice: 6999,
+                discount: "35% OFF",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1543076447-215ad9ba6923?auto=format&fit=crop&w=800&q=80",
+                sizes: ["M", "L", "XL"],
+                description: "Heavyweight indigo denim with faux sherpa fur inner lining."
+            }
+        ];
+
+        let cart = [];
+        let appliedDiscount = 0;
+        let activeCategory = 'all';
+
+        // --- RENDER PRODUCTS INTO GRID ---
+        function renderProducts(itemsToRender) {
+            const grid = document.getElementById('product-grid');
+            document.getElementById('product-count').innerText = `Showing ${itemsToRender.length} Products`;
+            grid.innerHTML = '';
+
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">No matching streetwear items found.</div>`;
+                return;
+            }
+
+            itemsToRender.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col justify-between group relative';
+                card.innerHTML = `
+                    <div>
+                        <!-- Image Container -->
+                        <div class="relative h-72 overflow-hidden bg-zinc-900 cursor-pointer" onclick="openZoomModal(${p.id})">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            
+                            <!-- Tag Badge -->
+                            <span class="absolute top-3 left-3 bg-obsidian/80 backdrop-blur-md text-emeraldAccent text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-emeraldAccent/30">
+                                ${p.tag}
+                            </span>
+
+                            <!-- Discount Tag -->
+                            <span class="absolute top-3 right-3 bg-crimsonAccent/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                                ${p.discount}
+                            </span>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-5">
+                            <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+                                <span class="capitalize">${p.category}</span>
+                                <span><i class="fa-solid fa-star text-goldAccent text-[10px]"></i> ${p.rating}</span>
+                            </div>
+
+                            <h3 onclick="openZoomModal(${p.id})" class="font-syne text-white font-bold text-base hover:text-emeraldAccent cursor-pointer transition-colors line-clamp-1">${p.name}</h3>
+                            
+                            <!-- Size Selector Buttons -->
+                            <div class="mt-3">
+                                <span class="text-[10px] text-zinc-400 font-semibold block mb-1">Sizes:</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${p.sizes.map((s, idx) => `
+                                        <button onclick="selectSize(this)" class="size-btn px-2 py-1 bg-zinc-900 border border-zinc-800 rounded text-[10px] text-zinc-300 hover:border-emeraldAccent ${idx === 0 ? 'border-emeraldAccent text-emeraldAccent' : ''}">${s}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Price Row -->
+                            <div class="mt-4 flex items-baseline gap-2">
+                                <span class="font-syne text-lg text-emeraldAccent font-extrabold">₹${p.price.toLocaleString('en-IN')}</span>
+                                <span class="text-xs text-zinc-500 line-through">₹${p.originalPrice.toLocaleString('en-IN')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add to Bag Button -->
+                    <div class="px-5 pb-5">
+                        <button onclick="addToCart(${p.id})" class="w-full bg-zinc-900 hover:bg-emeraldAccent hover:text-obsidian border border-zinc-700 hover:border-emeraldAccent text-white text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bag-shopping"></i> Add To Bag
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- SIZE SELECTION ---
+        function selectSize(btn) {
+            const siblings = btn.parentElement.querySelectorAll('.size-btn');
+            siblings.forEach(s => s.classList.remove('border-emeraldAccent', 'text-emeraldAccent'));
+            btn.classList.add('border-emeraldAccent', 'text-emeraldAccent');
+        }
+
+        // --- FILTER BY CATEGORY ---
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('text-emeraldAccent', 'active');
+                if(b.dataset.cat === cat) b.classList.add('text-emeraldAccent', 'active');
+            });
+
+            if (cat === 'all') {
+                renderProducts(products);
+            } else if (cat === 'best-seller') {
+                renderProducts(products.filter(p => p.tag === 'Best Seller'));
+            } else {
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
+
+        // --- SORT PRODUCTS ---
+        function sortProducts(criteria) {
+            let sorted = [...products];
+            if (activeCategory !== 'all') {
+                sorted = sorted.filter(p => p.category === activeCategory);
+            }
+
+            if (criteria === 'price-low') sorted.sort((a, b) => a.price - b.price);
+            if (criteria === 'price-high') sorted.sort((a, b) => b.price - a.price);
+            if (criteria === 'popular') sorted.sort((a, b) => b.rating - a.rating);
+            if (criteria === 'newest') sorted.sort((a, b) => b.id - a.id);
+
+            renderProducts(sorted);
+        }
+
+        // --- REAL-TIME SEARCH ---
+        function handleSearch(query) {
+            const q = query.toLowerCase().trim();
+            const matches = products.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+            renderProducts(matches);
+
+            // Update mobile modal results
+            const resultsBox = document.getElementById('search-results-preview');
+            if (resultsBox && q.length > 0) {
+                resultsBox.innerHTML = matches.map(m => `
+                    <div onclick="openZoomModal(${m.id}); toggleSearchModal();" class="flex items-center justify-between p-3 bg-zinc-900 rounded-xl cursor-pointer hover:border hover:border-emeraldAccent">
+                        <span class="text-white text-xs font-bold">${m.name}</span>
+                        <span class="text-emeraldAccent text-xs font-bold">₹${m.price}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleSearchModal() {
+            document.getElementById('search-modal').classList.toggle('hidden');
+            document.getElementById('search-modal').classList.toggle('flex');
+        }
+
+        // --- SHOPPING CART LOGIC ---
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            const existing = cart.find(c => c.id === id);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`Added "${item.name}" to cart!`);
+        }
+
+        function updateQuantity(id, change) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+            document.getElementById('cart-counter').innerText = totalCount;
+            document.getElementById('cart-drawer-count').innerText = `${totalCount} Items`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-zinc-500">
+                        <i class="fa-solid fa-bag-shopping text-4xl mb-3 opacity-40"></i>
+                        <p class="text-sm">Your shopping bag is empty.</p>
+                    </div>`;
+                document.getElementById('cart-subtotal').innerText = '₹0';
+                document.getElementById('cart-gst').innerText = '₹0';
+                document.getElementById('cart-total').innerText = '₹0';
+                document.getElementById('checkout-total-display').innerText = '₹0';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map(item => {
+                subtotal += item.price * item.qty;
+                return `
+                    <div class="flex items-center justify-between gap-3 p-3 bg-zinc-900/80 rounded-xl border border-zinc-800">
+                        <img src="${item.image}" alt="${item.name}" class="w-14 h-14 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-syne text-white text-xs font-bold line-clamp-1">${item.name}</h4>
+                            <p class="text-emeraldAccent font-bold text-xs mt-0.5">₹${(item.price * item.qty).toLocaleString('en-IN')}</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-zinc-950 px-2 py-1 rounded-lg border border-zinc-800">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                            <span class="text-xs font-bold text-white">${item.qty}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const gst = Math.round(subtotal * 0.18);
+            const discountAmt = Math.round(subtotal * appliedDiscount);
+            const total = subtotal - discountAmt;
+
+            document.getElementById('cart-subtotal').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
+            document.getElementById('cart-gst').innerText = `₹${gst.toLocaleString('en-IN')}`;
+            document.getElementById('cart-discount').innerText = `- ₹${discountAmt.toLocaleString('en-IN')}`;
+            document.getElementById('cart-total').innerText = `₹${total.toLocaleString('en-IN')}`;
+            document.getElementById('checkout-total-display').innerText = `₹${total.toLocaleString('en-IN')}`;
+        }
+
+        function toggleCartDrawer() {
+            document.getElementById('cart-drawer').classList.toggle('translate-x-full');
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            if (code === "URBAN10" || code === "FIRST10") {
+                appliedDiscount = 0.10;
+                showToast("Promo Code URBAN10 Applied (10% Discount)!");
+            } else {
+                showToast("Invalid Promo Code. Try URBAN10");
+            }
+            updateCartUI();
+        }
+
+        // --- CHECKOUT & ORDER MODAL ---
+        function openCheckoutModal() {
+            if(cart.length === 0) {
+                showToast("Your cart is empty! Add products first.");
+                return;
+            }
+            toggleCartDrawer();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            closeCheckoutModal();
+            cart = [];
+            updateCartUI();
+            showToast("🎉 Order Placed Successfully! Tracking SMS Sent.");
+        }
+
+        // --- QUICK ZOOM MODAL ---
+        function openZoomModal(id) {
+            const p = products.find(item => item.id === id);
+            document.getElementById('zoom-modal-img').src = p.image;
+            document.getElementById('zoom-modal-tag').innerText = p.tag;
+            document.getElementById('zoom-modal-title').innerText = p.name;
+            document.getElementById('zoom-modal-desc').innerText = p.description;
+            document.getElementById('zoom-modal-price').innerText = `₹${p.price.toLocaleString('en-IN')}`;
+
+            document.getElementById('zoom-modal-sizes').innerHTML = p.sizes.map(s => `
+                <span class="px-3 py-1 bg-zinc-900 border border-zinc-700 rounded text-xs text-white">${s}</span>
+            `).join('');
+
+            document.getElementById('zoom-modal-add-btn').onclick = function() {
+                addToCart(p.id);
+                closeZoomModal();
+            };
+
+            document.getElementById('product-zoom-modal').classList.remove('hidden');
+        }
+
+        function closeZoomModal() {
+            document.getElementById('product-zoom-modal').classList.add('hidden');
+        }
+
+        // --- TOAST SYSTEM ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- THREE.JS INTERACTIVE HERO PARTICLES CANVAS ---
+        function initHero3D() {
+            const canvas = document.getElementById('hero-3d-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 4;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Particles
+            const particleGeo = new THREE.BufferGeometry();
+            const count = 300;
+            const posArray = new Float32Array(count * 3);
+
+            for (let i = 0; i < count * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.03,
+                color: 0x10B981,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const particleMesh = new THREE.Points(particleGeo, particleMat);
+            scene.add(particleMesh);
+
+            // Floating Sphere Geometry
+            const sphereGeo = new THREE.IcosahedronGeometry(1.6, 2);
+            const sphereMat = new THREE.MeshPhysicalMaterial({
+                color: 0x10B981,
+                wireframe: true,
+                emissive: 0x0B0D10
+            });
+            const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+            scene.add(sphereMesh);
+
+            // Animation Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                particleMesh.rotation.y += 0.001;
+                sphereMesh.rotation.y += 0.003;
+                sphereMesh.rotation.x += 0.002;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize Event
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderProducts(products);
+            initHero3D();
+        };
+    </script>
+</body>
+</html>
